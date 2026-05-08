@@ -139,8 +139,10 @@ function renderShap(items) {
 // ── EMI fetch ─────────────────────────────────────────
 async function fetchAndRenderEMI(principal, rate, months) {
   try {
-    const res  = await fetch(`${API_BASE}/emi-calculate?principal=${principal}&annual_interest_rate=${rate}&months=${months}`);
-    const data = await res.json();
+    const res  = await fetch(`${API_BASE}/emi-calculate?principal=${principal}&annual_rate=${rate}&months=${months}`);
+
+    const json = await res.json();
+    const data = json.data;
 
     el('emiMonthly').textContent   = fmtINR(data.emi);
     el('emiPrincipal').textContent = fmtINR(data.principal);
@@ -187,9 +189,11 @@ async function render(d) {
   document.head.appendChild(style);
 
   // Gauge
-  const score = d.confidence_score || 50;
-  animateGauge(score, cfg.accentColor);
-  animateCount(el('gaugeNum'), 0, score, 1400, v => v.toFixed(1));
+//  FIX — change all three to:
+// ✅ FIX — add back the two animation calls
+const score = d.confidence || 50;
+animateGauge(score, cfg.accentColor);
+animateCount(el('gaugeNum'), 0, score, 1400, v => v.toFixed(1));
 
   // Risk pill
   const pill = el('riskPill');
@@ -198,7 +202,8 @@ async function render(d) {
 
   // Prob bars — reconstruct from confidence
   // If the backend sends class_probabilities, use them; else synthesize
-  const probs = d.class_probabilities || buildFakeProbs(riskLabel, d.confidence_score);
+  // FIX
+const probs = d.class_probabilities || buildFakeProbs(riskLabel, d.confidence);
   await sleep(300);
   setProbBar('pb-low',  'pv-low',  PROB_COLORS.Low,    probs.Low    || 0);
   setProbBar('pb-med',  'pv-med',  PROB_COLORS.Medium,  probs.Medium || 0);
@@ -228,7 +233,8 @@ async function render(d) {
   el('interestRate').textContent  = `${d.interest_rate}%`;
   el('interestRange').textContent = riskLabel === 'Low' ? '8–10% p.a.' : riskLabel === 'Medium' ? '12–15% p.a.' : '18–20% p.a.';
 
-  el('confidence').textContent = `${d.confidence_score?.toFixed(1)}%`;
+// FIX
+el('confidence').textContent = `${d.confidence?.toFixed(1)}%`;
   el('confidenceSub').textContent = `${riskLabel} risk prediction`;
 
   // EMI

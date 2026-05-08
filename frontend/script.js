@@ -172,7 +172,8 @@ async function submitForm() {
     const json = await res.json();
 
     // The backend /predict endpoint returns the payload directly (not wrapped in .data)
-    sessionStorage.setItem('riskResult', JSON.stringify(json));
+    //  FIX — unwrap .data before storing
+    sessionStorage.setItem('riskResult', JSON.stringify(json.data));
     sessionStorage.setItem('formInput',  JSON.stringify(payload));
     window.location.href = 'result.html';
 
