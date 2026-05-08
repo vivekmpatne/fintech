@@ -1,0 +1,617 @@
+/* ═══════════════════════════════════════════════════════
+   result.css — Risk Result page styles
+═══════════════════════════════════════════════════════ */
+
+/* ── Page layout ────────────────────────────────────── */
+.result-main {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* ── Loading state ──────────────────────────────────── */
+#loadingView {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 20px;
+}
+
+.loader-ring {
+  width: 48px; height: 48px;
+  border: 3px solid var(--surface-3);
+  border-top-color: var(--teal-500);
+  border-radius: 50%;
+  animation: spin .75s linear infinite;
+}
+
+.loader-text {
+  font-size: .875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: .02em;
+}
+
+/* ── Error state ────────────────────────────────────── */
+#errorView {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 12px;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 2.5rem;
+  margin-bottom: 4px;
+}
+
+.error-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.4rem;
+  color: var(--navy-900);
+}
+
+.error-msg {
+  font-size: .875rem;
+  color: var(--text-muted);
+  max-width: 340px;
+  line-height: 1.6;
+}
+
+/* ── Result view ────────────────────────────────────── */
+#resultView { display: none; }
+
+/* ── Page header strip ──────────────────────────────── */
+.result-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.result-breadcrumb {
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.result-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  color: var(--navy-900);
+  letter-spacing: -.015em;
+}
+
+/* Approval badge */
+.approval-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.badge-approved {
+  background: var(--green-50);
+  color: var(--green-600);
+  border: 1.5px solid var(--green-100);
+}
+
+.badge-partial {
+  background: var(--amber-50);
+  color: var(--amber-600);
+  border: 1.5px solid var(--amber-100);
+}
+
+.badge-rejected {
+  background: var(--red-50);
+  color: var(--red-600);
+  border: 1.5px solid var(--red-100);
+}
+
+/* ── Grid layouts ───────────────────────────────────── */
+.result-grid-main {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.result-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.result-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 860px) {
+  .result-grid-main { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 620px) {
+  .result-grid-3, .result-grid-2 { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 400px) {
+  .result-grid-3 { grid-template-columns: 1fr; }
+}
+
+/* ── Risk score card ────────────────────────────────── */
+.risk-score-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.risk-score-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent-color, var(--teal-500));
+  transition: background .4s;
+}
+
+/* Gauge */
+.gauge-wrap { position: relative; margin-bottom: 8px; }
+.gauge-svg  { overflow: visible; }
+
+.gauge-track {
+  fill: none;
+  stroke: var(--surface-3);
+  stroke-width: 12;
+  stroke-linecap: round;
+}
+
+.gauge-fill {
+  fill: none;
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke: var(--accent-color, var(--teal-500));
+  transition: stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1), stroke .4s;
+}
+
+.gauge-needle {
+  transform-origin: 100px 100px;
+  transition: transform 1.6s cubic-bezier(.4,0,.2,1);
+}
+
+.gauge-center-text {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.gauge-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--navy-900);
+}
+
+.gauge-sub {
+  font-size: .65rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Risk label below gauge */
+.risk-label-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin: 12px 0 8px;
+}
+
+.pill-low    { background: var(--green-50);  color: var(--green-600);  border: 1px solid var(--green-100); }
+.pill-medium { background: var(--amber-50);  color: var(--amber-600);  border: 1px solid var(--amber-100); }
+.pill-high   { background: var(--red-50);    color: var(--red-600);    border: 1px solid var(--red-100); }
+
+.risk-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+/* Prob bars */
+.prob-section {
+  width: 100%;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prob-row {
+  display: grid;
+  grid-template-columns: 54px 1fr 46px;
+  align-items: center;
+  gap: 8px;
+}
+
+.prob-label {
+  font-size: .72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  text-align: right;
+}
+
+.prob-track {
+  height: 5px;
+  background: var(--surface-3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.prob-bar {
+  height: 100%;
+  border-radius: 3px;
+  width: 0;
+  transition: width 1.2s cubic-bezier(.4,0,.2,1);
+}
+
+.prob-val {
+  font-family: 'DM Mono', monospace;
+  font-size: .72rem;
+  text-align: right;
+  color: var(--text-secondary);
+}
+
+/* ── Risk detail card ───────────────────────────────── */
+.risk-detail-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 28px;
+}
+
+.risk-status-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.risk-headline {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.35rem;
+  color: var(--navy-900);
+  margin-bottom: 8px;
+}
+
+.risk-desc {
+  font-size: .875rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+
+/* Key metrics list */
+.metric-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.metric-row:last-child { border-bottom: none; }
+.metric-row:nth-child(even) { background: var(--surface); }
+
+.metric-key {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.metric-val {
+  font-family: 'DM Mono', monospace;
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--navy-900);
+}
+
+/* ── Stat cards (3-col) ─────────────────────────────── */
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs);
+  padding: 20px 22px;
+}
+
+.stat-icon-wrap {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.stat-label {
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--navy-900);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-sub {
+  font-size: .75rem;
+  color: var(--text-muted);
+}
+
+/* ── EMI card ───────────────────────────────────────── */
+.emi-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 24px 28px;
+  grid-column: 1 / -1;
+}
+
+.emi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-top: 18px;
+}
+
+.emi-cell {
+  background: var(--surface);
+  padding: 16px 18px;
+}
+
+.emi-cell:first-child { background: var(--navy-900); }
+
+.e-label {
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+
+.emi-cell:first-child .e-label { color: rgba(255,255,255,.5); }
+
+.e-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy-900);
+}
+
+.emi-cell:first-child .e-val { color: var(--white); font-size: 1.2rem; }
+
+@media (max-width: 580px) {
+  .emi-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── SHAP card ──────────────────────────────────────── */
+.shap-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 24px 28px;
+  grid-column: 1 / -1;
+}
+
+.shap-legend {
+  display: flex;
+  gap: 20px;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: .75rem;
+  color: var(--text-muted);
+}
+
+.legend-swatch {
+  width: 12px; height: 5px;
+  border-radius: 3px;
+}
+
+.shap-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shap-item {
+  display: grid;
+  grid-template-columns: 190px 1fr 100px;
+  align-items: center;
+  gap: 16px;
+  padding: 13px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  opacity: 0;
+  transform: translateX(-8px);
+}
+
+.shap-item.reveal {
+  opacity: 1;
+  transform: none;
+  transition: opacity .35s var(--ease), transform .35s var(--ease);
+}
+
+.shap-feat {
+  font-size: .85rem;
+  font-weight: 500;
+  color: var(--navy-900);
+}
+
+.shap-bar-track {
+  height: 6px;
+  background: var(--surface-3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.shap-bar {
+  height: 100%;
+  border-radius: 3px;
+  width: 0;
+  transition: width 1s cubic-bezier(.4,0,.2,1);
+}
+
+.bar-pos { background: var(--teal-500); }
+.bar-neg { background: var(--red-600); }
+
+.shap-tag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  justify-content: flex-end;
+}
+
+.tag-pos { color: var(--teal-600); }
+.tag-neg { color: var(--red-600); }
+
+@media (max-width: 560px) {
+  .shap-item { grid-template-columns: 1fr; gap: 8px; }
+}
+
+/* ── CTA strip ──────────────────────────────────────── */
+.cta-card {
+  background: var(--navy-900);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.cta-text h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.1rem;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.cta-text p {
+  font-size: .84rem;
+  color: rgba(255,255,255,.55);
+  max-width: 420px;
+  line-height: 1.55;
+}
+
+.cta-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-white {
+  background: var(--white);
+  color: var(--navy-900);
+  border-color: var(--white);
+}
+
+.btn-white:hover {
+  background: var(--surface);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-ghost-white {
+  background: transparent;
+  color: rgba(255,255,255,.7);
+  border-color: rgba(255,255,255,.25);
+}
+
+.btn-ghost-white:hover {
+  color: var(--white);
+  border-color: rgba(255,255,255,.5);
+}
+
+@media (max-width: 580px) {
+  .result-main { padding: 20px 16px 60px; }
+  .risk-detail-card, .risk-score-card { padding: 20px; }
+  .emi-cell { padding: 12px; }
+  .shap-card, .emi-card { padding: 18px 20px; }
+  .cta-card { padding: 22px 20px; }
+}
