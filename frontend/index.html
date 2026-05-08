@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SME Risk Assessment — Apply</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:     #0a0e1a;
+      --navy-2:   #0f1526;
+      --navy-3:   #161d35;
+      --navy-4:   #1e2745;
+      --teal:     #00c896;
+      --teal-dim: #00a07a;
+      --gold:     #f0a500;
+      --rose:     #ff5f7e;
+      --text:     #e8ecf4;
+      --muted:    #6b7a9e;
+      --border:   #1e2848;
+      --card:     #111827;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Background mesh ──────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(0,200,150,.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 80%, rgba(240,165,0,.05) 0%, transparent 55%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Grid texture ─────────────────────────────── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Header ───────────────────────────────────── */
+    header {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: -.02em;
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .logo-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 12px var(--teal);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 8px var(--teal); }
+      50%      { box-shadow: 0 0 20px var(--teal), 0 0 40px rgba(0,200,150,.3); }
+    }
+
+    .logo span { color: var(--teal); }
+
+    .header-badge {
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+
+    /* ── Main layout ──────────────────────────────── */
+    main {
+      position: relative; z-index: 5;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── Hero headline ────────────────────────────── */
+    .hero {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--teal);
+      border: 1px solid rgba(0,200,150,.3);
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      line-height: 1.1;
+      letter-spacing: -.03em;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--teal), #00e6b0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 460px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── Step progress ────────────────────────────── */
+    .steps-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 40px;
+    }
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+
+    .step-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: calc(50% + 18px);
+      width: calc(100% - 4px);
+      height: 1px;
+      background: var(--border);
+      transition: background .4s ease;
+    }
+
+    .step-item.completed:not(:last-child)::after {
+      background: var(--teal);
+    }
+
+    .step-connector {
+      width: 80px;
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 28px;
+      transition: background .4s ease;
+    }
+
+    .step-circle {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-size: .8rem;
+      font-weight: 700;
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      background: var(--navy-2);
+      transition: all .3s ease;
+      position: relative; z-index: 1;
+    }
+
+    .step-item.active .step-circle {
+      border-color: var(--teal);
+      color: var(--teal);
+      box-shadow: 0 0 0 4px rgba(0,200,150,.12);
+    }
+
+    .step-item.completed .step-circle {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: var(--navy);
+    }
+
+    .step-label {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .step-item.active .step-label { color: var(--teal); }
+    .step-item.completed .step-label { color: var(--text); }
+
+    .steps-nav-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+    }
+
+    .step-row {
+      display: flex;
+      align-items: center;
+    }
+
+    .step-line {
+      width: 80px; height: 1px;
+      background: var(--border);
+      margin-bottom: 30px;
+      transition: background .5s;
+    }
+
+    .step-line.done { background: var(--teal); }
+
+    /* ── Card form ────────────────────────────────── */
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--teal), transparent);
+    }
+
+    .step-panel {
+      display: none;
+      animation: fadeSlide .35s ease forwards;
+    }
+
+    .step-panel.active { display: block; }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateX(18px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .panel-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      margin-bottom: 6px;
+      letter-spacing: -.02em;
+    }
+
+    .panel-subtitle {
+      color: var(--muted);
+      font-size: .875rem;
+      margin-bottom: 32px;
+    }
+
+    /* ── Form fields ──────────────────────────────── */
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .field-grid.single { grid-template-columns: 1fr; }
+    .field-grid.thirds { grid-template-columns: 1fr 1fr 1fr; }
+
+    @media (max-width: 580px) {
+      .field-grid, .field-grid.thirds { grid-template-columns: 1fr; }
+      .form-card { padding: 24px; }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .field-hint {
+      font-size: .72rem;
+      color: #4a5570;
+      letter-spacing: 0;
+      text-transform: none;
+      font-weight: 400;
+    }
+
+    input[type="number"],
+    input[type="text"],
+    select {
+      background: var(--navy-3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .95rem;
+      color: var(--text);
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+      width: 100%;
+      appearance: none;
+    }
+
+    input[type="number"]:focus,
+    input[type="text"]:focus,
+    select:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(0,200,150,.12);
+    }
+
+    input[type="number"]::placeholder { color: var(--muted); opacity: .5; }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7a9e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+      cursor: pointer;
+    }
+
+    select option { background: var(--navy-3); }
+
+    /* Segmented control for utility payment */
+    .segmented {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .segmented input[type="radio"] { display: none; }
+
+    .segmented label {
+      flex: 1;
+      text-align: center;
+      padding: 12px 8px;
+      font-size: .8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--muted);
+      background: var(--navy-3);
+      cursor: pointer;
+      transition: all .2s;
+      border-right: 1px solid var(--border);
+    }
+
+    .segmented label:last-of-type { border-right: none; }
+
+    .segmented input[type="radio"]:checked + label {
+      color: var(--navy);
+      background: var(--teal);
+    }
+
+    /* INR prefix input */
+    .input-prefix {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--navy-3);
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .input-prefix:focus-within {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(0,200,150,.12);
+    }
+
+    .prefix-label {
+      padding: 13px 14px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .8rem;
+      color: var(--teal);
+      font-weight: 500;
+      border-right: 1px solid var(--border);
+      background: rgba(0,200,150,.06);
+      white-space: nowrap;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .input-prefix input {
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      flex: 1;
+    }
+
+    .input-prefix input:focus {
+      border: none;
+      box-shadow: none;
+    }
+
+    /* Range slider */
+    .slider-wrap { display: flex; flex-direction: column; gap: 8px; }
+
+    .slider-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--teal);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 4px;
+      -webkit-appearance: none;
+      background: var(--border);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 0 3px rgba(0,200,150,.2);
+      cursor: pointer;
+    }
+
+    .slider-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-size: .7rem;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    /* Error state */
+    .field.error input,
+    .field.error select,
+    .field.error .input-prefix {
+      border-color: var(--rose) !important;
+    }
+
+    .field-error-msg {
+      font-size: .72rem;
+      color: var(--rose);
+      display: none;
+    }
+
+    .field.error .field-error-msg { display: block; }
+
+    /* ── Summary card ─────────────────────────────── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .summary-item {
+      background: var(--navy-3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+    }
+
+    .summary-item .s-label {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .summary-item .s-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* ── Navigation buttons ───────────────────────── */
+    .form-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 36px;
+      gap: 12px;
+    }
+
+    .btn {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: .9rem;
+      padding: 14px 28px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all .25s;
+      letter-spacing: .01em;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    .btn-primary {
+      background: var(--teal);
+      color: var(--navy);
+      min-width: 160px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+
+    .btn-primary:hover {
+      background: #00e6b0;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0,200,150,.3);
+    }
+
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-primary:disabled {
+      opacity: .5; cursor: not-allowed; transform: none; box-shadow: none;
+    }
+
+    .btn-primary .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(10,14,26,.3);
+      border-top-color: var(--navy);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-primary.loading .spinner { display: block; }
+    .btn-primary.loading .btn-text { display: none; }
+
+    /* ── Trust strip ──────────────────────────────── */
+    .trust-strip {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
+    .trust-icon {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: rgba(0,200,150,.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .65rem;
+    }
+
+    /* ── Toast ────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      background: #1e1430;
+      border: 1px solid var(--rose);
+      color: var(--rose);
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: .875rem;
+      font-weight: 500;
+      max-width: 340px;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all .3s;
+      z-index: 100;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <span>Finova</span>Risk
+    </div>
+    <div class="header-badge">SME Credit Assessment</div>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="hero-eyebrow">AI-Powered Lending</div>
+      <h1>Know Your Risk.<br /><em>Get Funded Faster.</em></h1>
+      <p>Our ML model analyses 11 business signals to give you an instant risk score and loan offer in seconds.</p>
+    </div>
+
+    <!-- Step Progress -->
+    <div class="steps-nav" id="stepsNav">
+      <div class="step-row">
+        <div class="step-item active" id="s1">
+          <div class="step-circle">1</div>
+          <div class="step-label">Business</div>
+        </div>
+        <div class="step-line" id="line1"></div>
+        <div class="step-item" id="s2">
+          <div class="step-circle">2</div>
+          <div class="step-label">Financials</div>
+        </div>
+        <div class="step-line" id="line2"></div>
+        <div class="step-item" id="s3">
+          <div class="step-circle">3</div>
+          <div class="step-label">Loan Details</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+
+      <!-- ── Step 1: Business Profile ──────────────────── -->
+      <div class="step-panel active" id="panel1">
+        <div class="panel-title">Business Profile</div>
+        <div class="panel-subtitle">Tell us about your business</div>
+
+        <div class="field-grid">
+          <div class="field" id="f-business_age">
+            <label for="business_age">Business Age
+              <span class="field-hint">(years)</span>
+            </label>
+            <input type="number" id="business_age" name="business_age" placeholder="e.g. 5" min="0" max="100" />
+            <span class="field-error-msg">Please enter a valid age (0–100)</span>
+          </div>
+
+          <div class="field" id="f-industry_type">
+            <label for="industry_type">Industry Type</label>
+            <select id="industry_type" name="industry_type">
+              <option value="" disabled selected>Select industry</option>
+              <option value="0">🛍️  Retail</option>
+              <option value="1">🏭  Manufacturing</option>
+              <option value="2">💼  Services</option>
+              <option value="3">🍽️  Food &amp; Beverage</option>
+              <option value="4">🧵  Textile</option>
+            </select>
+            <span class="field-error-msg">Please select an industry</span>
+          </div>
+
+          <div class="field" id="f-num_employees">
+            <label for="num_employees">Number of Employees</label>
+            <input type="number" id="num_employees" name="num_employees" placeholder="e.g. 15" min="1" max="5000" />
+            <span class="field-error-msg">Enter a number between 1 and 5000</span>
+          </div>
+
+          <div class="field" id="f-city_tier">
+            <label for="city_tier">City Tier</label>
+            <select id="city_tier" name="city_tier">
+              <option value="" disabled selected>Select tier</option>
+              <option value="1">Tier 1 — Metro (Mumbai, Delhi, Bengaluru…)</option>
+              <option value="2">Tier 2 — Mid-size city</option>
+              <option value="3">Tier 3 — Small town / Rural</option>
+            </select>
+            <span class="field-error-msg">Please select a city tier</span>
+          </div>
+        </div>
+
+        <div class="form-nav">
+          <div></div>
+          <button class="btn btn-primary" onclick="nextStep(1)">
+            <span class="btn-text">Next: Financials →</span>
+            <span class="spinner"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 2: Financials ────────────────────────── -->
+      <div class="step-panel" id="panel2">
+        <div class="panel-title">Financial Details</div>
+        <div class="panel-subtitle">Your business's financial health signals</div>
+
+        <div class="field-grid">
+          <div class="field" id="f-annual_revenue">
+            <label>Annual Revenue</label>
+            <div class="input-prefix">
+              <span class="prefix-label">₹ INR</span>
+              <input type="number" id="annual_revenue" name="annual_revenue" placeholder="e.g. 5000000" min="0" />
+            </div>
+            <span class="field-error-msg">Enter a positive revenue amount</span>
+          </div>
+
+          <div class="field" id="f-existing_debt">
+            <label>Existing Debt</label>
+            <div class="input-prefix">
+              <span class="prefix-label">₹ INR</span>
+              <input type="number" id="existing_debt" name="existing_debt" placeholder="e.g. 500000" min="0" />
+            </div>
+            <span class="field-error-msg">Enter 0 if no existing debt</span>
+          </div>
+
+          <div class="field" id="f-upi_volume">
+            <label>Monthly UPI Volume
+              <span class="field-hint">(INR/month)</span>
+            </label>
+            <div class="input-prefix">
+              <span class="prefix-label">₹ INR</span>
+              <input type="number" id="upi_volume" name="upi_volume" placeholder="e.g. 300000" min="0" />
+            </div>
+            <span class="field-error-msg">Enter a valid UPI volume</span>
+          </div>
+
+          <div class="field" id="f-gst_consistency">
+            <label>GST Filing Consistency
+              <span class="field-hint">(%)</span>
+            </label>
+            <div class="slider-wrap">
+              <span class="slider-val" id="gst_val">70%</span>
+              <input type="range" id="gst_consistency" name="gst_consistency" min="0" max="100" value="70"
+                     oninput="document.getElementById('gst_val').textContent = this.value + '%'" />
+              <div class="slider-ticks"><span>0%</span><span>50%</span><span>100%</span></div>
+            </div>
+          </div>
+
+          <div class="field full" id="f-utility_payment">
+            <label>Utility Bill Payment History</label>
+            <div class="segmented">
+              <input type="radio" name="utility_payment" id="util_poor"    value="0" />
+              <label for="util_poor"    style="color:inherit">🔴 Poor</label>
+              <input type="radio" name="utility_payment" id="util_avg"     value="1" checked />
+              <label for="util_avg"     style="color:inherit">🟡 Average</label>
+              <input type="radio" name="utility_payment" id="util_good"    value="2" />
+              <label for="util_good"    style="color:inherit">🟢 Good</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-nav">
+          <button class="btn btn-ghost" onclick="prevStep(2)">← Back</button>
+          <button class="btn btn-primary" onclick="nextStep(2)">
+            <span class="btn-text">Next: Loan Details →</span>
+            <span class="spinner"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 3: Loan Details + Summary ───────────── -->
+      <div class="step-panel" id="panel3">
+        <div class="panel-title">Loan Request</div>
+        <div class="panel-subtitle">How much do you need and for how long?</div>
+
+        <div class="field-grid">
+          <div class="field" id="f-loan_amount">
+            <label>Loan Amount Requested</label>
+            <div class="input-prefix">
+              <span class="prefix-label">₹ INR</span>
+              <input type="number" id="loan_amount" name="loan_amount" placeholder="e.g. 2000000" min="1" />
+            </div>
+            <span class="field-error-msg">Enter a valid loan amount</span>
+          </div>
+
+          <div class="field" id="f-loan_duration">
+            <label>Loan Duration
+              <span class="field-hint">(months)</span>
+            </label>
+            <div class="slider-wrap">
+              <span class="slider-val" id="dur_val">24 months</span>
+              <input type="range" id="loan_duration" name="loan_duration" min="3" max="120" value="24"
+                     oninput="document.getElementById('dur_val').textContent = this.value + ' months'" />
+              <div class="slider-ticks"><span>3m</span><span>5 yrs</span><span>10 yrs</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Application Summary -->
+        <div style="margin-top:32px; margin-bottom:8px">
+          <div style="font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:16px">
+            Application Summary
+          </div>
+          <div class="summary-grid" id="summaryGrid">
+            <!-- filled by JS -->
+          </div>
+        </div>
+
+        <div class="form-nav">
+          <button class="btn btn-ghost" onclick="prevStep(3)">← Back</button>
+          <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">
+            <span class="btn-text">Assess My Risk ✦</span>
+            <span class="spinner"></span>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- .form-card -->
+
+    <div class="trust-strip">
+      <div class="trust-item"><div class="trust-icon">🔒</div> 256-bit encrypted</div>
+      <div class="trust-item"><div class="trust-icon">⚡</div> Result in &lt;2 seconds</div>
+      <div class="trust-item"><div class="trust-icon">🤖</div> ML-powered by Random Forest + SHAP</div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API_BASE = 'http://localhost:8000';
+    let currentStep = 1;
+
+    // ── Step navigation ────────────────────────────────────────────────────────
+    function setStep(step) {
+      for (let i = 1; i <= 3; i++) {
+        const panel = document.getElementById(`panel${i}`);
+        const sItem = document.getElementById(`s${i}`);
+        panel.classList.remove('active');
+        sItem.classList.remove('active', 'completed');
+        if (i < step)      sItem.classList.add('completed');
+        else if (i === step) { sItem.classList.add('active'); panel.classList.add('active'); }
+      }
+      for (let i = 1; i <= 2; i++) {
+        document.getElementById(`line${i}`).classList.toggle('done', i < step);
+      }
+      currentStep = step;
+      if (step === 3) buildSummary();
+    }
+
+    // ── Validation ─────────────────────────────────────────────────────────────
+    const stepFields = {
+      1: ['business_age','industry_type','num_employees','city_tier'],
+      2: ['annual_revenue','existing_debt','upi_volume'],
+      3: ['loan_amount'],
+    };
+
+    function validateStep(step) {
+      let valid = true;
+      const fields = stepFields[step] || [];
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        const wrap = document.getElementById(`f-${id}`);
+        if (!wrap) return;
+        const val = el ? el.value.trim() : '';
+        const isNum = el && el.type === 'number';
+        let ok = val !== '' && val !== 'null' && (!isNum || (+val >= +el.min && (el.max === '' || +val <= +el.max)));
+        wrap.classList.toggle('error', !ok);
+        if (!ok) valid = false;
+      });
+      return valid;
+    }
+
+    function nextStep(from) {
+      if (!validateStep(from)) { showToast('Please fill in all required fields correctly.'); return; }
+      setStep(from + 1);
+    }
+
+    function prevStep(from) { setStep(from - 1); }
+
+    // ── Summary builder ────────────────────────────────────────────────────────
+    const industryNames = ['Retail','Manufacturing','Services','Food & Beverage','Textile'];
+    const tierNames     = ['','Tier 1 — Metro','Tier 2','Tier 3'];
+    const utilNames     = ['Poor','Average','Good'];
+
+    function fmtINR(v) {
+      const n = +v;
+      if (n >= 10_000_000) return `₹${(n/10_000_000).toFixed(1)}Cr`;
+      if (n >= 100_000)    return `₹${(n/100_000).toFixed(1)}L`;
+      return `₹${n.toLocaleString('en-IN')}`;
+    }
+
+    function buildSummary() {
+      const items = [
+        { label: 'Business Age',    val: `${document.getElementById('business_age').value} yrs` },
+        { label: 'Industry',        val: industryNames[document.getElementById('industry_type').value] || '—' },
+        { label: 'Employees',       val: document.getElementById('num_employees').value },
+        { label: 'City',            val: tierNames[document.getElementById('city_tier').value] || '—' },
+        { label: 'Annual Revenue',  val: fmtINR(document.getElementById('annual_revenue').value) },
+        { label: 'Existing Debt',   val: fmtINR(document.getElementById('existing_debt').value) },
+        { label: 'UPI Volume/mo',   val: fmtINR(document.getElementById('upi_volume').value) },
+        { label: 'GST Consistency', val: `${document.getElementById('gst_consistency').value}%` },
+      ];
+      document.getElementById('summaryGrid').innerHTML = items.map(i =>
+        `<div class="summary-item"><div class="s-label">${i.label}</div><div class="s-val">${i.val}</div></div>`
+      ).join('');
+    }
+
+    // ── Collect form data ──────────────────────────────────────────────────────
+    function collectData() {
+      const util = document.querySelector('input[name="utility_payment"]:checked');
+      return {
+        business_age:    parseFloat(document.getElementById('business_age').value),
+        industry_type:   parseInt(document.getElementById('industry_type').value),
+        num_employees:   parseInt(document.getElementById('num_employees').value),
+        city_tier:       parseInt(document.getElementById('city_tier').value),
+        annual_revenue:  parseFloat(document.getElementById('annual_revenue').value),
+        gst_consistency: parseFloat(document.getElementById('gst_consistency').value),
+        existing_debt:   parseFloat(document.getElementById('existing_debt').value),
+        upi_volume:      parseFloat(document.getElementById('upi_volume').value),
+        utility_payment: parseInt(util ? util.value : 1),
+        loan_amount:     parseFloat(document.getElementById('loan_amount').value),
+        loan_duration:   parseInt(document.getElementById('loan_duration').value),
+      };
+    }
+
+    // ── Submit ─────────────────────────────────────────────────────────────────
+    async function submitForm() {
+      if (!validateStep(3)) { showToast('Please enter a valid loan amount.'); return; }
+
+      const btn = document.getElementById('submitBtn');
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      try {
+        const payload = collectData();
+        const res  = await fetch(`${API_BASE}/predict`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || 'Server error');
+        }
+
+        const json = await res.json();
+        sessionStorage.setItem('riskResult', JSON.stringify(json.data));
+        sessionStorage.setItem('formInput',  JSON.stringify(payload));
+        window.location.href = 'result.html';
+
+      } catch (e) {
+        showToast(`Error: ${e.message}`);
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    }
+
+    // ── Toast ──────────────────────────────────────────────────────────────────
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    // ── Remove error on input ──────────────────────────────────────────────────
+    document.querySelectorAll('input, select').forEach(el => {
+      el.addEventListener('input', () => {
+        const wrap = document.getElementById(`f-${el.name || el.id}`);
+        if (wrap) wrap.classList.remove('error');
+      });
+    });
+  </script>
+</body>
+</html>
